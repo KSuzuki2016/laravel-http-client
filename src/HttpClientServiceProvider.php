@@ -2,9 +2,11 @@
 
 namespace KSuzuki2016\HttpClient;
 
+use KSuzuki2016\HttpClient\Drivers\ChromeProcess;
 use KSuzuki2016\HttpClient\Drivers\DriverInterface;
 use KSuzuki2016\HttpClient\Http\HttpDuskFactory;
 use KSuzuki2016\HttpClient\Http\DuskResponse;
+use Laravel\Dusk\Console\ChromeDriverCommand;
 use Symfony\Component\DomCrawler\Crawler;
 use  KSuzuki2016\HttpClient\WebDriver\Driver;
 use Illuminate\Http\Client\Factory;
@@ -42,6 +44,7 @@ class HttpClientServiceProvider extends ServiceProvider
         Response::macro('stacks', function () {
             return json_decode($this->header('stacks') ?? '[]', true);
         });
+
     }
 
     public function register()

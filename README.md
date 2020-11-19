@@ -1,44 +1,35 @@
 # laravel-http-client
 
-# インストール
+LaravelのHttpファサードでヘッドレスブラウザ(Dusk)を使える様に拡張
+
+## インストール
+
+Chromeをサーバーへインストール  
 
 google-chromeとかgoogle-chrome-stableあたりが入ってれば大丈夫  
 
-## Chromeをサーバーへインストール  
-
-``` php
+``` shell script
 sudo wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
 sudo apt-get update
 sudo apt-get install -y google-chrome-stable
 ```
 
-## ドライバの追加
+ドライバの追加
 
-``` php
-php artisan dusk:chrome-driver -all
-php artisan dusk:install
+現状で利用可能なバーションは`70`から`73`のバージョン限定
+
+``` shell script
+php artisan dusk:chrome-driver 70
 ```
 
-## ログの設定
+## 機能
 
-エラーログとデバッグログの設定  
+### Httpファサード拡張
 
-logging.php  
+`response`に`crawler`を追加
 
-``` php
-'http-client-log' => [
-    'driver' => 'daily',
-    'log_max_files' => '10',
-    'log_level' => 'debug' ,
-    'path' => storage_path('logs/http-client-log.log'),
-],
-```
-# Httpファサードを拡張
-
-## メソッド追加
-get メソッドが返却したインスタンスに crawler を追加  
-Symfony\Component\DomCrawler\Crawler を返します
+*Symfony\Component\DomCrawler\Crawler*を返します
 
 ``` php
 $response->crawler(): Crawler
@@ -47,63 +38,35 @@ $response->crawler(): Crawler
 [
 Laravel 7.x HTTPクライアント > リクエスト作成](https://readouble.com/laravel/7.x/ja/http-client.html#making-requests)
 
-## Duskメソッド追加
+### Duskメソッド追加
 
 getリクエストの際にヘッドレスブラウザがクライアントになる  
 
 ``` php
 use Illuminate\Support\Facades\Http;
 
-Http::dusk();
+Http::dusk([script macro]);
 
 Http::get(...) ;
 ```
 
-## UserAgentの指定 
+### javascript macro
 
-``` php
-$get = Http::withOptions([
-    'userAgent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X)'
-]
-```
+**Duskモード利用時**にjavascriptの実行が可能
 
-その他のオプションはまだやってないので下記で対応  
-
-``` php
-namespace HttpClient;
-
-class HttpDusk
-{
-    public function createBrowser($url):void
-    {
-        $chromeOptions = new ChromeOptions ;
-        // ,'--window-size=375,667'
-        $chromeOptions->addArguments(['--headless','--disable-gpu','--lang=ja_JP']) ;
-        $mobileEmulation = Arr::only( $this->options , ['deviceMetrics'] ) ;
-        $mobileEmulation['userAgent'] = Arr::get( $this->options , 'userAgent' , head( (array)$this->request->header('User-Agent') ) ) ;
-        $chromeOptions->setExperimentalOption('mobileEmulation', $mobileEmulation ) ;
-        $driver = new Driver( $chromeOptions ) ;
-        $this->browser = new ChromeBrowser( $driver ) ;
-        $this->browser->visit($url) ;
-    }
-}
-```
-
-この辺を触ったらいい  
-
-## javascriptの設定
-
-browserCallbackに設定  
+`dusk`宣言時もしくは`browserCallback`に設定
 
 ``` php
 use Illuminate\Support\Facades\Http;
 
-Http::dusk();
-
+Http::dusk(new BrowserMacro);
+// どちらか
 Http::browserCallback( new BrowserMacro );
 ```
 
-### サンプル
+macro サンプル
+
+戻り値はレスポンスヘッダーの`stacks`に格納されている
 
 ``` php
 <?php
@@ -120,14 +83,16 @@ class BrowserMacro
     public function __invoke(ChromeBrowser $browser)
     {
         $browser->ensurejQueryIsAvailable() ;
-        $browser->resize(375,1648) ;
-        $browser->getDriver()->executeScript('$("h1").html("書き換え")') ;
+        $browser->getDriver()->executeScript('$("h1").html("Rewrite Head")') ;
     }
 }
 ```
 
-### レスポンスの取り方
+## TODO
 
-- レスポンスヘッダー内のstacksにスクリプトから返却した文字が入っている
+今後の予定は`Extensions`でテスト中
 
-
+1. よく使う設定をクラスにまとめる機能
+1. ロギング処理
+1. stubコマンド
+1. ドライバのバーションアップ
