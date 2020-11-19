@@ -4,7 +4,7 @@
 
 ### サービスプロバイダかなんかで追加してあげる
 
-```
+``` php
 use Illuminate\Http\Client\PendingRequest ;
 
 /**
@@ -29,7 +29,7 @@ PendingRequest::macro('get2',function(string $url, $query = null){
 - new Illuminate\Http\Client\Response( GuzzleHttp\Psr7\Response::class )
 - Psr\Http\Message\ResponseInterface::class をbindするのがよいかも
 
-```
+``` php
 /**
  * Send the request to the given URL.
  *
@@ -86,7 +86,8 @@ public function send(string $method, string $url, array $options = [])
 ### Illuminate\Http\Client\Response
 
 チェックしてないぽいからgetBody()のみ実装したらいいかも
-```
+
+``` php
 class Response implements ArrayAccess
 {
     /**
@@ -105,7 +106,7 @@ class Response implements ArrayAccess
 
 簡単にこれでいけそ
 
-```
+``` php
 use GuzzleHttp\Psr7\Response ;
 
 /**
@@ -120,7 +121,7 @@ resolve(Response::class,['status' => 200,'headers'=>[],'body'=>'BodyBodyBody'])
 
 ### stub でリクエストに対するコールバックを設定可能
 
-```
+``` php
 /**
  * リクエストをインターセプトし、スタブ応答を返すことができるスタブcallableを登録します。
  *

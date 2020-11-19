@@ -1,18 +1,16 @@
 <?php
 
-namespace HttpClient ;
+namespace KSuzuki2016\HttpClient;
 
-use duncan3dc\Laravel\Drivers\DriverInterface;
-use HttpClient\Interfaces\RouterInterface;
-use HttpClient\Repositories\RouteCollection;
-use HttpClient\Repositories\Router;
-use HttpClient\Repositories\RouteResource;
-use Illuminate\Foundation\Application;
-use Symfony\Component\DomCrawler\Crawler ;
-use HttpClient\WebDriver\Driver;
+use KSuzuki2016\HttpClient\Drivers\DriverInterface;
+use KSuzuki2016\HttpClient\Http\HttpDuskFactory;
+use KSuzuki2016\HttpClient\Http\DuskResponse;
+use Symfony\Component\DomCrawler\Crawler;
+use  KSuzuki2016\HttpClient\WebDriver\Driver;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Client\Response ;
+use Illuminate\Http\Client\Response;
+
 /**
  * Class HttpClientServiceProvider
  *
@@ -22,31 +20,32 @@ use Illuminate\Http\Client\Response ;
 class HttpClientServiceProvider extends ServiceProvider
 {
     public $bindings = [
-        Factory::class              => DuskRequest::class ,
-        DriverInterface::class      => Driver::class ,
-        RouterInterface::class      => Router::class ,
+        Factory::class => HttpDuskFactory::class,
+        DriverInterface::class => Driver::class,
     ];
 
     public $singletons = [
-        Response::class             => DuskResponse::class ,
-        RouteCollection::class      => RouteCollection::class ,
+        Response::class => DuskResponse::class,
     ];
 
     public function boot()
     {
-        // HttpCommandExecutor::DEFAULT_HTTP_HEADERS
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/http-client.php' => config_path('http-client.php'),
+            ], 'config');
+        }
 
-        Response::macro('crawler' , function (){
-            return new Crawler( $this->body() ) ;
-        }) ;
-        Response::macro('stacks' , function (){
-            return json_decode( $this->header('stacks')??'[]' , true ) ;
-        }) ;
+        Response::macro('crawler', function () {
+            return new Crawler($this->body());
+        });
+        Response::macro('stacks', function () {
+            return json_decode($this->header('stacks') ?? '[]', true);
+        });
     }
+
     public function register()
     {
-        $this->app->singleton(RouteResource::class,function(Application $app ){
-            return new RouteResource( $app->make(Router::class) ) ;
-        });
+        $this->mergeConfigFrom(__DIR__ . '/../config/http-client.php', 'http-client');
     }
 }

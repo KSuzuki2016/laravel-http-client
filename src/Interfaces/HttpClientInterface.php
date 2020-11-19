@@ -1,15 +1,17 @@
 <?php
 
 
-    namespace HttpClient\Interfaces;
+namespace KSuzuki2016\HttpClient\Interfaces;
 
 
-    use Illuminate\Http\Client\Response;
+use Illuminate\Http\Client\Response;
 
-    interface HttpClientInterface
-    {
-        public function request( $method ,$url, $parameters = []):Response ;
+interface HttpClientInterface
+{
+    public function __invoke($method, $url, $parameters = []): Response ;
 
-        public function send( $method ,$url, $parameters = []):Response ;
+    public function request($method, $url, $parameters = []): Response;
 
-    }
+    public function send($method, $url, $parameters = []): Response;
+
+}

@@ -1,42 +1,43 @@
 <?php
 
 
-    namespace HttpClient\WebDriver ;
+namespace KSuzuki2016\HttpClient\WebDriver;
 
-    use duncan3dc\Laravel\Dusk;
-    use Laravel\Dusk\Browser;
+use KSuzuki2016\HttpClient\Dusk;
+use Laravel\Dusk\Browser;
 
-    /**
-     * Class ChromeBrowser
-     *
-     * @mixin Browser
-     * @package HttpClient\WebDriver
-     */
-    class ChromeBrowser extends Dusk
+/**
+ * Class ChromeBrowser
+ *
+ * @mixin Browser
+ * @package HttpClient\WebDriver
+ */
+class ChromeBrowser extends Dusk
+{
+    public function get($url)
     {
-        public function get($url)
-        {
-            $this->visit($url) ;
-            return $this->getDriver()->getPageSource() ;
-        }
-
-        public function getBody()
-        {
-            return $this->getDriver()->getPageSource() ;
-        }
-
-        public function screen()
-        {
-            $this->screenshot('') ;
-            return $this->getDriver()->getPageSource() ;
-        }
-        public function ensurejQueryIsAvailable()
-        {
-            $this->getBrowser()->ensurejQueryIsAvailable();
-        }
-
-        public function __destruct()
-        {
-            parent::__destruct();
-        }
+        $this->visit($url);
+        return $this->getDriver()->getPageSource();
     }
+
+    public function getBody()
+    {
+        return $this->getDriver()->getPageSource();
+    }
+
+    public function screen()
+    {
+        $this->screenshot('');
+        return $this->getDriver()->getPageSource();
+    }
+
+    public function ensurejQueryIsAvailable()
+    {
+        $this->getBrowser()->ensurejQueryIsAvailable();
+    }
+
+    public function __destruct()
+    {
+        parent::__destruct();
+    }
+}
