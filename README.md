@@ -23,6 +23,10 @@ sudo apt-get install -y google-chrome-stable
 php artisan dusk:chrome-driver 70
 ```
 
+## 使い方
+
+基本的な機能は [Laravel HTTPクライアント](https://readouble.com/laravel/8.x/ja/http-client.html) と同じでいくつかの機能追加をしてある
+
 ## 機能
 
 ### Httpファサード拡張
@@ -34,9 +38,6 @@ php artisan dusk:chrome-driver 70
 ``` php
 $response->crawler(): Crawler
 ```
-
-[
-Laravel 7.x HTTPクライアント > リクエスト作成](https://readouble.com/laravel/7.x/ja/http-client.html#making-requests)
 
 ### Duskメソッド追加
 
