@@ -2,11 +2,9 @@
 
 namespace KSuzuki2016\HttpClient;
 
-use KSuzuki2016\HttpClient\Drivers\ChromeProcess;
 use KSuzuki2016\HttpClient\Drivers\DriverInterface;
 use KSuzuki2016\HttpClient\Http\HttpDuskFactory;
 use KSuzuki2016\HttpClient\Http\DuskResponse;
-use Laravel\Dusk\Console\ChromeDriverCommand;
 use Symfony\Component\DomCrawler\Crawler;
 use  KSuzuki2016\HttpClient\WebDriver\Driver;
 use Illuminate\Http\Client\Factory;
@@ -50,5 +48,8 @@ class HttpClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/http-client.php', 'http-client');
+        $this->app->singleton(FactoryManager::class , function ($app) {
+            return new FactoryManager($app) ;
+        });
     }
 }

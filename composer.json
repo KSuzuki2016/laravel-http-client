@@ -43,10 +43,8 @@
         "laravel": {
             "providers": [
                 "KSuzuki2016\\HttpClient\\HttpClientServiceProvider"
-            ],
-            "aliases": {
-                "Http": "Illuminate\\Support\\Facades\\Http"
-            }
+            ]
         }
     }
 }
+
