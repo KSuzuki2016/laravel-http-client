@@ -5,10 +5,14 @@ namespace KSuzuki2016\HttpClient;
 
 use Closure;
 use Facebook\WebDriver\Chrome\ChromeOptions;
+use GuzzleHttp\Utils;
 use Illuminate\Support\Facades\Http;
-use KSuzuki2016\HttpClient\Http\HttpDuskFactory;
-use KSuzuki2016\HttpClient\WebDriver\ChromeBrowser;
-use KSuzuki2016\HttpClient\WebDriver\Driver;
+
+use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
+use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
+use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
+
 use Illuminate\Support\Arr;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Collection;
@@ -17,7 +21,12 @@ use ArrayAccess;
 
 class HttpDusk
 {
+
     protected $request;
+
+    protected $headers;
+
+    protected $url;
 
     protected $options;
 
@@ -34,14 +43,21 @@ class HttpDusk
     protected $status = 200;
 
 
-    public function __construct(Request $request, array $options = [], Collection $browserCallbacks = null)
+    public function __construct($request = null, array $options = [], Collection $browserCallbacks = null)
     {
         $this->request = $request;
+        if ($request instanceof Request) {
+            $this->headers = $request->headers();
+            $this->url = $request->url();
+        } elseif (is_array($request)) {
+            $this->headers = Arr::get($request, 'headers', []);
+            $this->url = Arr::get($request, 'url');
+        }
         $this->options = $options;
         $this->browserCallbacks = $browserCallbacks ?? collect();
     }
 
-    public static function make(Request $request, array $options = [], Collection $browserCallbacks = null): HttpDusk
+    public static function make($request, array $options = [], Collection $browserCallbacks = null): self
     {
         return new static($request, $options, $browserCallbacks);
     }
@@ -51,12 +67,13 @@ class HttpDusk
         $chromeOptions = new ChromeOptions;
         // ,'--window-size=375,667'
         $mobileEmulation = Arr::only($this->options, ['deviceMetrics']);
-        $userAgent = Arr::get($this->options, 'userAgent', head((array)$this->request->header('User-Agent')));
         $chromeOptions->addArguments(['--headless', '--disable-gpu', '--lang=ja']);
-        $mobileEmulation['userAgent'] = $userAgent;
+        $mobileEmulation['userAgent'] = $this->userAgent();
         $chromeOptions->setExperimentalOption('mobileEmulation', $mobileEmulation);
-        $driver = new Driver($chromeOptions);
+
+        $driver = new ChromeDriver($chromeOptions);
         $this->browser = new ChromeBrowser($driver);
+
         $this->browser->visit($url);
     }
 
@@ -66,6 +83,11 @@ class HttpDusk
             'stacks' => $this->stacks,
             'errors' => $this->errors,
         ], 'filled');
+    }
+
+    public function userAgent(): string
+    {
+        return Arr::get($this->options, 'userAgent', Arr::get((array)$this->headers, 'User-Agent')) ?? Utils::defaultUserAgent();
     }
 
     public function body()
@@ -78,10 +100,10 @@ class HttpDusk
         return $this->status;
     }
 
-    public function browser(): ChromeBrowser
+    public function browser(): DuskBrowser
     {
-        if (!($this->browser instanceof ChromeBrowser)) {
-            $this->createBrowser($this->request->url());
+        if (!($this->browser instanceof DuskBrowser)) {
+            $this->createBrowser($this->url);
         }
         return $this->browser;
     }
@@ -107,12 +129,10 @@ class HttpDusk
         return Http::response($this->body(), $this->status(), $this->header());
     }
 
-    public static function http_dusk(HttpDuskFactory $duskRequest): Closure
+    public static function http_dusk(DuskFactory $duskRequest): Closure
     {
-        return function (Request $request, array $options = []) use ($duskRequest) {
-            return tap(static::make($request, $options, $duskRequest->browserCallbacks), function () use ($duskRequest) {
-                $duskRequest->reset();
-            })->response();
+        return function ($request, array $options = []) use ($duskRequest) {
+            return static::make($request, $options, $duskRequest->browserCallbacks)->response();
         };
     }
 

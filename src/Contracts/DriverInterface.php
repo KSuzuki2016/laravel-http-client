@@ -1,6 +1,6 @@
 <?php
 
-namespace KSuzuki2016\HttpClient\Drivers;
+namespace KSuzuki2016\HttpClient\Contracts;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverCapabilities;

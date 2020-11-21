@@ -27,7 +27,44 @@ php artisan dusk:chrome-driver 70
 
 基本的な機能は [Laravel HTTPクライアント](https://readouble.com/laravel/8.x/ja/http-client.html) と同じでいくつかの機能追加をしてある
 
-## 機能
+### 設定
+
+``` php
+<?php
+
+return [
+
+    'crawler'   => env('HTTP_RESPONSE_CRAWLER', \Symfony\Component\DomCrawler\Crawler::class ) ,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Http Request Driver
+    |--------------------------------------------------------------------------
+    | dusk is alias for dusk-chrome
+    |
+    | Drivers: "guzzle", "dusk" , "dusk-chrome"
+    |
+    */
+    'default' => env('HTTP_CLIENT_DRIVER', 'guzzle') ,
+
+    'http_facade_overwrite' => env('HTTP_FACADE_OVERWRITE', false ) ,
+
+];
+```
+
+### 使い方
+
+`manager`クラスからクライアントドライバを呼び出して使う
+
+``` php
+<?php
+
+use KSuzuki2016\HttpClient\DriverManager ;
+
+$manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
+$manager->driver('dusk')->get('URL') ;
+
+```
 
 ### Httpファサード拡張
 
@@ -36,33 +73,25 @@ php artisan dusk:chrome-driver 70
 *Symfony\Component\DomCrawler\Crawler*を返します
 
 ``` php
-$response->crawler(): Crawler
-```
+<?php
+use KSuzuki2016\HttpClient\DriverManager ;
 
-### Duskメソッド追加
-
-getリクエストの際にヘッドレスブラウザがクライアントになる  
-
-``` php
-use Illuminate\Support\Facades\Http;
-
-Http::dusk([script macro]);
-
-Http::get(...) ;
+$manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
+$manager->driver('dusk')->get('URL')->crawler() ;
 ```
 
 ### javascript macro
 
-**Duskモード利用時**にjavascriptの実行が可能
+javascriptの実行が可能
 
-`dusk`宣言時もしくは`browserCallback`に設定
+`browserCallback`に設定
 
 ``` php
-use Illuminate\Support\Facades\Http;
+<?php
+use KSuzuki2016\HttpClient\DriverManager ;
 
-Http::dusk(new BrowserMacro);
-// どちらか
-Http::browserCallback( new BrowserMacro );
+$manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
+$manager->browserCallback( new BrowserMacro )->driver('dusk')->get('URL') ;
 ```
 
 macro サンプル
@@ -73,9 +102,9 @@ macro サンプル
 <?php
 namespace HttpClient\Macros;
 
-use HttpClient\WebDriver\ChromeBrowser;
+use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
 
-class BrowserMacro
+class TestMacro
 {
     /**
      * @param ChromeBrowser $browser
@@ -83,19 +112,26 @@ class BrowserMacro
      */
     public function __invoke(ChromeBrowser $browser)
     {
-        $browser->ensurejQueryIsAvailable() ;
-        $browser->getDriver()->executeScript('$("h1").html("Rewrite Head")') ;
+        // Browser Macro
     }
 }
+```
+
+## Macro Make Command
+
+Macroのひな形を作成
+
+``` shell script
+$ php artisan make:http:macro CustomMacro
 ```
 
 ## TODO
 
 今後の予定は`Extensions`でテスト中
 
-1. よく使う設定をクラスにまとめる機能
+1. ~~よく使う設定をクラスにまとめる機能~~
 1. ロギング処理
-1. stubコマンド
+1. ~~stubコマンド~~
 1. ドライバのバーションアップ
-1. マルチドライバ対応
+1. ~~マルチドライバ対応~~
 

@@ -1,16 +1,15 @@
 <?php
 
-namespace KSuzuki2016\HttpClient;
+namespace KSuzuki2016\HttpClient\Contracts;
 
-use KSuzuki2016\HttpClient\Drivers\Chrome;
-use KSuzuki2016\HttpClient\Drivers\DriverInterface;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use KSuzuki2016\HttpClient\Element;
 use Laravel\Dusk\Browser;
 
 use function substr;
 use const PHP_URL_PATH;
 
-class Dusk
+abstract class DuskBrowser
 {
     /**
      * @var Browser $browser The browser instance to use.
@@ -35,14 +34,10 @@ class Dusk
      */
     public function __construct(DriverInterface $driver = null)
     {
-        if ($driver === null) {
-            $driver = new Chrome();
+        if ($driver instanceof DriverInterface) {
+            $this->browser = new Browser($driver->getDriver());
+            $this->driver = $driver;
         }
-
-        $this->browser = new Browser($driver->getDriver());
-
-        # Stash the driver so that its destructor is called in sync with this instance
-        $this->driver = $driver;
     }
 
 
@@ -53,7 +48,7 @@ class Dusk
      *
      * @return $this
      */
-    public function setBaseUrl(string $url): Dusk
+    public function setBaseUrl(string $url): DuskBrowser
     {
         $this->baseUrl = rtrim($url, "/");
 
@@ -118,7 +113,7 @@ class Dusk
      *
      * @return $this
      */
-    public function visit(string $url): Dusk
+    public function visit(string $url): DuskBrowser
     {
         $url = $this->applyBaseUrl($url);
 
@@ -169,7 +164,7 @@ class Dusk
      *
      * @return $this
      */
-    public function screenshot(string $filename): Dusk
+    public function screenshot(string $filename): DuskBrowser
     {
         if ($filename[0] !== "/") {
             $filename = "/tmp/{$filename}";
@@ -192,7 +187,7 @@ class Dusk
      *
      * @return $this;
      */
-    public function executeScript(string $script): Dusk
+    public function executeScript(string $script): DuskBrowser
     {
         $this->getDriver()->executeScript($script);
 

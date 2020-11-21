@@ -1,21 +1,22 @@
 <?php
 
+use Symfony\Component\DomCrawler\Crawler;
+
 return [
 
-    'response'  => env('HTTP_RESPONSE', \KSuzuki2016\HttpClient\Http\DuskResponse::class ) ,
+    'crawler' => env('HTTP_RESPONSE_CRAWLER', Crawler::class),
 
-    'crawler'   => env('HTTP_CRAWLER', \Symfony\Component\DomCrawler\Crawler::class ) ,
+    /*
+    |--------------------------------------------------------------------------
+    | Http Request Driver
+    |--------------------------------------------------------------------------
+    | dusk is alias for dusk-chrome
+    |
+    | Drivers: "guzzle", "dusk" , "dusk-chrome"
+    |
+    */
+    'default' => env('HTTP_CLIENT_DRIVER', 'guzzle'),
 
-    'default' => env('HTTP_CLIENT', 'guzzle') ,
-    'drivers' => [
-        'guzzle' => [
-            'driver'    => 'guzzle',
-            'factory'   => \Illuminate\Http\Client\Factory::class
-        ],
-        'dusk' => [
-            'driver' => 'dusk',
-            'factory'   => \KSuzuki2016\HttpClient\Http\HttpDuskFactory::class
-        ],
-    ],
+    'http_facade_overwrite' => env('HTTP_FACADE_OVERWRITE', false),
 
 ];

@@ -7,11 +7,12 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverCapabilities;
 use Symfony\Component\Process\Process;
+use KSuzuki2016\HttpClient\Contracts\DriverInterface;
 
-class Chrome implements DriverInterface
+class ChromeDriver implements DriverInterface
 {
     /** @var int */
-    private $port;
+    private $port = 9515;
 
     /** @var Process<int, string>|null */
     private $process;
@@ -19,21 +20,11 @@ class Chrome implements DriverInterface
     /** @var WebDriverCapabilities */
     private $capabilities;
 
-
-    /**
-     * Create a new instance and automatically start the driver.
-     */
-    public function __construct(int $port = 9515)
+    public function __construct(ChromeOptions $options)
     {
-        $this->port = $port;
-
         $this->start();
-
         $capabilities = DesiredCapabilities::chrome();
-
-        $options = (new ChromeOptions())->addArguments(["--headless"]);
-        $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
-
+        $capabilities->setCapability('chromeOptions', $options);
         $this->setCapabilities($capabilities);
     }
 

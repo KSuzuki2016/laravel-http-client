@@ -1,0 +1,18 @@
+<?php
+
+namespace {{ namespace }} ;
+
+
+use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
+
+class {{ class }}
+{
+    /**
+     * @param ChromeBrowser $browser
+     * @return void|string|null
+     */
+    public function __invoke(ChromeBrowser $browser)
+    {
+        // Browser Macro
+    }
+}

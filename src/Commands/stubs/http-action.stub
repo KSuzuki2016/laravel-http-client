@@ -1,0 +1,27 @@
+<?php
+namespace KSuzuki2016\HttpClient\HttpActions;
+
+use KSuzuki2016\HttpClient\Extentions\Contracts\HttpClient;
+use KSuzuki2016\HttpClient\Extentions\Macros\BrowserMacro;
+use Illuminate\Http\Client\Response;
+use Exception;
+use KSuzuki2016\HttpClient\Http\DuskFactory;
+
+class Chrome extends HttpClient
+{
+    public function __construct()
+    {
+        parent::__construct() ;
+        $this->client = app(DuskFactory::class);
+    }
+
+    public function send($method, $url, $parameters = []): Response
+    {
+        if ($method === 'get') {
+            $this->client->dusk(new BrowserMacro);
+            return $this->client->get($url);
+        }
+        throw new Exception('this client GET method only ');
+    }
+
+}
