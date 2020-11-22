@@ -3,8 +3,10 @@
 namespace KSuzuki2016\HttpClient;
 
 use Illuminate\Http\Client\Factory;
+use KSuzuki2016\HttpClient\Commands\HttpActionMakeCommand;
 use KSuzuki2016\HttpClient\Commands\HttpMacroMakeCommand;
 use Illuminate\Support\ServiceProvider;
+use KSuzuki2016\HttpClient\Commands\HttpObserverMakeCommand;
 
 /**
  * Class HttpClientServiceProvider
@@ -12,6 +14,7 @@ use Illuminate\Support\ServiceProvider;
 class HttpClientServiceProvider extends ServiceProvider
 {
     public $bindings = [
+        'http-client' => DriverManager::class
     ];
 
     public $singletons = [
@@ -41,6 +44,7 @@ class HttpClientServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 HttpMacroMakeCommand::class,
+                HttpObserverMakeCommand::class,
             ]);
         }
     }

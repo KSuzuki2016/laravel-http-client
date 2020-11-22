@@ -105,6 +105,3 @@ auth.json
 .gitmodules
 storage/adams
 iinasg/
-src/HttpClients
-src/Logging
-tests

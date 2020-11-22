@@ -5,7 +5,9 @@ namespace KSuzuki2016\HttpClient\HttpClients;
 
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http;
 use KSuzuki2016\HttpClient\Contracts\HttpClient;
+use KSuzuki2016\HttpClient\Contracts\HttpClientInterface;
 
 class DefaultClient extends HttpClient
 {

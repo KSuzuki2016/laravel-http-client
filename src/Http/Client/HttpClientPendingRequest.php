@@ -10,6 +10,8 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Request;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse as Response;
+use Exception;
+use KSuzuki2016\HttpClient\ResponseObserverHandler;
 
 class HttpClientPendingRequest extends PendingRequest
 {
@@ -43,9 +45,9 @@ class HttpClientPendingRequest extends PendingRequest
                         $this->transferStats = $transferStats;
                     },
                 ], $options))), function ($response) {
+                    $this->fireResponseObserver($response);
                     $response->cookies = $this->cookies;
                     $response->transferStats = $this->transferStats;
-
                     if ($this->tries > 1 && !$response->successful()) {
                         $response->throw();
                     }
@@ -55,7 +57,6 @@ class HttpClientPendingRequest extends PendingRequest
             }
         }, $this->retryDelay ?? 100);
     }
-
     /**
      * Build the recorder handler.
      *
@@ -79,4 +80,11 @@ class HttpClientPendingRequest extends PendingRequest
         };
     }
 
+    public function fireResponseObserver($response)
+    {
+        if ($this->factory instanceof HttpClientFactory) {
+            return ResponseObserverHandler::make($response, $this->factory->responseObserver)->fire();
+        }
+        return $response;
+    }
 }
