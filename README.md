@@ -6,10 +6,7 @@ LaravelのHttpファサードを拡張して利用するライブラリ
 
 ## インストール
 
-`Packagist`未登録なので下記
-
 ``` shell script
-$ composer config repositories.KSuzuki2016/laravel-http-client vcs https://github.com/KSuzuki2016/laravel-http-client.git
 $ composer require KSuzuki2016/laravel-http-client
 ```
 

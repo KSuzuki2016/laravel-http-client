@@ -1,9 +1,9 @@
 {
     "name": "ksuzuki2016/laravel-http-client",
-    "type": "project",
-    "description": "The Laravel Framework.",
+    "type": "library",
+    "description": "The Laravel Http Facade Expansion",
     "keywords": [
-        "framework",
+        "HttpClient",
         "laravel"
     ],
     "license": "MIT",
