@@ -14,11 +14,11 @@
         "ext-zlib": "*",
         "ext-dom": "*",
         "ext-simplexml": "*",
-        "symfony/dom-crawler": "^5.1",
+        "symfony/dom-crawler": "^5.0",
         "php-webdriver/webdriver": "^1.8",
-        "laravel/dusk": "^6.8",
+        "laravel/dusk": "^6.0 || ^5.0",
         "symfony/process": "^5.1",
-        "guzzlehttp/guzzle": "^7.2"
+        "guzzlehttp/guzzle": "^7.0 || ^6.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
