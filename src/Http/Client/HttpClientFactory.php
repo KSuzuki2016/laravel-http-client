@@ -47,4 +47,22 @@ class HttpClientFactory extends Factory
         return $this;
     }
 
+    /**
+     * Execute a method against a new pending request instance.
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        if (static::hasMacro($method)) {
+            return $this->macroCall($method, $parameters);
+        }
+
+        return tap($this->newPendingRequest(), function ($request) {
+            $request->stub($this->stubCallbacks);
+        })->{$method}(...$parameters);
+    }
+
 }

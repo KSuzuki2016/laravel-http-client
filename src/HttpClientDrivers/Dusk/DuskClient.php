@@ -4,7 +4,6 @@
 namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk;
 
 use GuzzleHttp\Exception\InvalidArgumentException;
-use GuzzleHttp\Utils;
 use Illuminate\Support\Collection;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -70,9 +69,13 @@ class DuskClient extends Client
                 unset($result[$k]);
             }
         }
-        data_fill($result, 'headers.User-Agent', Utils::defaultUserAgent());
+        data_fill($result, 'headers.User-Agent', $this->defaultUserAgent());
 
         return $result;
     }
 
+    protected function defaultUserAgent()
+    {
+        return 'DuskHttp';
+    }
 }
