@@ -102,7 +102,7 @@ javascriptの実行が可能
 use KSuzuki2016\HttpClient\DriverManager ;
 
 $manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
-$manager->browserCallback( new BrowserMacro )->driver('dusk')->get('URL') ;
+$manager->driver('dusk')->browserCallback( new BrowserMacro )->get('URL') ;
 ```
 
 ### 例
@@ -139,9 +139,10 @@ class TestMacro
 use KSuzuki2016\HttpClient\DriverManager ;
 
 $manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
-$manager->responseObserver( new ResponseLogObserver )
+$manager->driver('dusk')
+        ->responseObserver( new ResponseLogObserver )
         ->responseObserver( new ResponseObserver )
-        ->driver('dusk')->get('URL') ;
+        ->get('URL') ;
 ```
 
 ### 実装方法
