@@ -38,6 +38,8 @@ return [
 
     'crawler'   => env('HTTP_RESPONSE_CRAWLER', \Symfony\Component\DomCrawler\Crawler::class ) ,
 
+    'binPath' => env('HTTP_CLIENT_CHROME_PATH') ,
+
     /*
     |--------------------------------------------------------------------------
     | Http Request Driver
@@ -72,6 +74,14 @@ $manager->driver('dusk')->get('URL') ;
 
 $manager = app('http-client') ;
 $manager->get('URL') ;
+```
+
+### chromedriver
+
+`HTTP_CLIENT_CHROME_PATH`に設定したディレクトリ内のドライバを利用
+
+``` dotenv
+HTTP_CLIENT_CHROME_PATH="/vagrant/vendor/ksuzuki2016/laravel-http-client/bin"
 ```
 
 ## Response拡張
@@ -175,6 +185,33 @@ class ResponseLogObserver extends ResponseObserver
         // 以降の処理を止める場合にbreakObservationを呼び出して停止可能
         $this->breakObservation();
     }
+}
+```
+
+### HttpClientResponseの値を操作する
+
+**ResponseObserver**等で値の変更が可能
+
+#### setStacks( array $stacks ):self
+
+シンプルな例
+
+``` php
+public function successful(HttpClientResponse $response)
+{
+    $stacks = array_merge( $response->stacks() , $response->json() ) ;
+    $response->setStacks( $stacks ) ;
+}
+```
+
+#### setJson( $key , $value = null ):self
+
+値を変更して次の処理へ渡す場合`return`で返却
+
+``` php
+public function successful(HttpClientResponse $response)
+{
+    return $response->setJson( 'key' , 'new value' ) ;
 }
 ```
 

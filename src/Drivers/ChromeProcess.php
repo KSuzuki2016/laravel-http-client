@@ -2,8 +2,8 @@
 
 namespace KSuzuki2016\HttpClient\Drivers;
 
-use Symfony\Component\Process\Process;
 use Laravel\Dusk\Chrome\ChromeProcess as BaseChromeProcess;
+use Symfony\Component\Process\Process;
 
 class ChromeProcess extends BaseChromeProcess
 {
@@ -19,9 +19,9 @@ class ChromeProcess extends BaseChromeProcess
      *
      * @param int $port The port to run on
      */
-    public function __construct(int $port = null)
+    public function __construct($driver = null, int $port = null)
     {
-        parent::__construct();
+        parent::__construct($driver);
         $this->port = $port ?: 9515;
     }
 

@@ -4,6 +4,7 @@
 namespace KSuzuki2016\HttpClient\Http\Client;
 
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Arr;
 
 class HttpClientResponse extends Response
 {
@@ -23,19 +24,30 @@ class HttpClientResponse extends Response
     public function stacks()
     {
         if (!$this->stacks) {
-            $this->stacks = json_decode($this->header('stacks') ?? '[]', true);
+            $this->stacks = json_decode('[' . $this->header('stacks') . ']', true);
         }
         return $this->stacks;
     }
 
-    public function setStacks(array $stacks)
+    public function stack(int $key = 0)
     {
-        $this->stacks = $stacks;
+        return Arr::get($this->stacks(), $key);
     }
 
-    public function setDecoded(array $decoded)
+    public function setStacks(array $stacks): self
     {
-        $this->decoded = $decoded;
+        $this->stacks = $stacks;
+        return $this;
+    }
+
+    public function setJson($key, $value = null): self
+    {
+        if (is_array($key)) {
+            $this->decoded = $key;
+        } else if (is_string($key) || is_int($key)) {
+            $this->decoded[$key] = $value;
+        }
+        return $this;
     }
 
 }

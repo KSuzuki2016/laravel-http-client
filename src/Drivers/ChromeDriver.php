@@ -6,11 +6,16 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverCapabilities;
-use Symfony\Component\Process\Process;
+use Illuminate\Support\Str;
 use KSuzuki2016\HttpClient\Contracts\DriverInterface;
+use Laravel\Dusk\OperatingSystem;
+use Symfony\Component\Process\Process;
 
 class ChromeDriver implements DriverInterface
 {
+    /** @var string */
+    private $driver;
+
     /** @var int */
     private $port = 9515;
 
@@ -20,14 +25,38 @@ class ChromeDriver implements DriverInterface
     /** @var WebDriverCapabilities */
     private $capabilities;
 
-    public function __construct(ChromeOptions $options)
+    public function __construct(ChromeOptions $options, $binPath = null)
     {
+        $this->setBinary($binPath);
         $this->start();
         $capabilities = DesiredCapabilities::chrome();
         $capabilities->setCapability('chromeOptions', $options);
         $this->setCapabilities($capabilities);
     }
 
+    protected function setBinary($path = null)
+    {
+        if ($path) {
+            $path = Str::finish($path, '/');
+            if ($this->onWindows()) {
+                $this->driver = realpath($path . 'chromedriver-win.exe');
+            } elseif ($this->onMac()) {
+                $this->driver = realpath($path . 'chromedriver-mac');
+            } else {
+                $this->driver = realpath($path . 'chromedriver-linux');
+            }
+        }
+    }
+
+    protected function onWindows()
+    {
+        return OperatingSystem::onWindows();
+    }
+
+    protected function onMac()
+    {
+        return OperatingSystem::onMac();
+    }
 
     /**
      * {@inheritDoc}
@@ -55,7 +84,7 @@ class ChromeDriver implements DriverInterface
     public function start(): DriverInterface
     {
         if (!$this->process) {
-            $this->process = (new ChromeProcess($this->port))->toProcess();
+            $this->process = (new ChromeProcess($this->driver, $this->port))->toProcess();
             $this->process->start();
             sleep(1);
         }

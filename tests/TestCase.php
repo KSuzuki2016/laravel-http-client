@@ -1,28 +1,32 @@
 <?php
 
-namespace KSuzuki2016\HttpClient\Tests;
+namespace Tests;
 
+use KSuzuki2016\HttpClient\DriverManager;
 use KSuzuki2016\HttpClient\HttpClientServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Illuminate\Http\Client\Factory;
+use Tests\Server\CreateLocalServer;
 
 class TestCase extends Orchestra
 {
+    use CreateLocalServer;
 
-    public $url = 'localhost:8000';
+    public $host = 'localhost:8000';
 
     public $html_page;
 
     public $json;
 
-    public $client;
+    public $manager;
 
     public function setUp(): void
     {
+        $this->baseUrl = 'http://' . $this->host;
+        $this->createLocalServer(__DIR__ . '/Server/pages');
         parent::setUp();
-        $this->html_page = $this->url . '/static.html';
-        $this->json = $this->url . '/test.json';
-        $this->client = app(Factory::class);
+        $this->html_page = $this->baseUrl . '/static.html';
+        $this->json = $this->baseUrl . '/test.json';
+        $this->manager = $this->app->make(DriverManager::class);
     }
 
     protected function getPackageProviders($app)
@@ -41,5 +45,4 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
     }
-
 }
