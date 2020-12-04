@@ -3,9 +3,8 @@
 namespace KSuzuki2016\HttpClient;
 
 use Illuminate\Http\Client\Factory;
-use KSuzuki2016\HttpClient\Commands\HttpActionMakeCommand;
-use KSuzuki2016\HttpClient\Commands\HttpMacroMakeCommand;
 use Illuminate\Support\ServiceProvider;
+use KSuzuki2016\HttpClient\Commands\HttpMacroMakeCommand;
 use KSuzuki2016\HttpClient\Commands\HttpObserverMakeCommand;
 
 /**
@@ -40,6 +39,9 @@ class HttpClientServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/http-client.php', 'http-client');
         $this->app->singleton(DriverManager::class, function ($app) {
             return new DriverManager($app);
+        });
+        $this->app->bind('chrome-bin-path', function ($app) {
+            return $app['config']->get('http-client.binPath');
         });
         if ($this->app->runningInConsole()) {
             $this->commands([

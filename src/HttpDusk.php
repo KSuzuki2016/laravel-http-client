@@ -3,21 +3,19 @@
 
 namespace KSuzuki2016\HttpClient;
 
+use ArrayAccess;
 use Closure;
+use Exception;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use GuzzleHttp\Utils;
-use Illuminate\Support\Facades\Http;
-
-use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
-use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
-use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
-use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
-
-use Illuminate\Support\Arr;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Exception;
-use ArrayAccess;
+use Illuminate\Support\Facades\Http;
+use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
+use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
+use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
 
 class HttpDusk
 {
@@ -70,10 +68,8 @@ class HttpDusk
         $chromeOptions->addArguments(['--headless', '--disable-gpu', '--lang=ja']);
         $mobileEmulation['userAgent'] = $this->userAgent();
         $chromeOptions->setExperimentalOption('mobileEmulation', $mobileEmulation);
-
-        $driver = new ChromeDriver($chromeOptions);
+        $driver = new ChromeDriver($chromeOptions, app('chrome-bin-path'));
         $this->browser = new ChromeBrowser($driver);
-
         $this->browser->visit($url);
     }
 
@@ -115,12 +111,23 @@ class HttpDusk
                 $stack = $callback($this->browser());
                 if ($stack instanceof ArrayAccess || is_array($stack)) {
                     $stack = json_encode($stack);
+                } else if (!self::isJson($stack)) {
+                    $stack = json_encode((array)$stack);
                 }
                 $this->stacks[] = $stack;
             } catch (Exception $e) {
                 $this->failed($e);
             }
         });
+    }
+
+    public static function isJson($value)
+    {
+        if (!in_array(substr($value, 0, 1), ['{', '[']) || !in_array(substr($value, -1), ['}', ']'])) {
+            return false;
+        }
+        json_decode($value);
+        return (json_last_error() === JSON_ERROR_NONE);
     }
 
     public function response()
