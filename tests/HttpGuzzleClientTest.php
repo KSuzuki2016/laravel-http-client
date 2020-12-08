@@ -2,14 +2,14 @@
 
 namespace Tests;
 
-use KSuzuki2016\HttpClient\Http\Client\HttpClientFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Guzzle\Factory;
 
 class HttpGuzzleClientTest extends TestCase
 {
     /** @test */
     public function check_factory()
     {
-        self::assertInstanceOf(HttpClientFactory::class, $this->manager->driver());
+        self::assertInstanceOf(Factory::class, $this->manager->driver());
     }
 
     /** @test */

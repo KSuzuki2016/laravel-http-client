@@ -8,7 +8,7 @@ use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Collection;
 use KSuzuki2016\HttpClient\Contracts\ResponseObserver;
 
-class HttpClientFactory extends Factory
+abstract class HttpClientFactory extends Factory
 {
 
     /**
@@ -30,9 +30,11 @@ class HttpClientFactory extends Factory
         $this->responseObserver = new Collection;
     }
 
-    protected function newPendingRequest()
+    abstract protected function callPendingRequest(): HttpClientPendingRequest;
+
+    protected function newPendingRequest(): HttpClientPendingRequest
     {
-        return new HttpClientPendingRequest($this);
+        return $this->callPendingRequest();
     }
 
     public function browserCallback(callable $callback): self

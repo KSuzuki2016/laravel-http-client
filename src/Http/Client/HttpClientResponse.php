@@ -21,6 +21,7 @@ class HttpClientResponse extends Response
         return app(config('http-client.crawler'), ['node' => $this->body()]);
     }
 
+    /** @noinspection ClassMethodNameMatchesFieldNameInspection */
     public function stacks()
     {
         if (!$this->stacks) {

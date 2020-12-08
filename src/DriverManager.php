@@ -1,11 +1,10 @@
 <?php
-
-
 namespace KSuzuki2016\HttpClient;
 
 use Illuminate\Support\Manager;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientFactory;
-use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Factory as DuskFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Guzzle\Factory as GuzzleFactory;
 
 class DriverManager extends Manager
 {
@@ -21,10 +20,10 @@ class DriverManager extends Manager
 
     public function createGuzzleDriver(): HttpClientFactory
     {
-        return new HttpClientFactory;
+        return new GuzzleFactory;
     }
 
-    public function getDefaultDriver()
+    public function getDefaultDriver(): string
     {
         return $this->config->get('http-client.driver', 'guzzle');
     }

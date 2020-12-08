@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Http;
 use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
 use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
 use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
-use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Factory;
 
 class HttpDusk
 {
@@ -63,14 +63,21 @@ class HttpDusk
     public function createBrowser($url): void
     {
         $chromeOptions = new ChromeOptions;
-        // ,'--window-size=375,667'
+        // ,'--window-size=375,667', '--remote-debugging-port=9222'
         $mobileEmulation = Arr::only($this->options, ['deviceMetrics']);
         $chromeOptions->addArguments(['--headless', '--disable-gpu', '--lang=ja']);
         $mobileEmulation['userAgent'] = $this->userAgent();
         $chromeOptions->setExperimentalOption('mobileEmulation', $mobileEmulation);
         $driver = new ChromeDriver($chromeOptions, app('chrome-bin-path'));
-        $this->browser = new ChromeBrowser($driver);
-        $this->browser->visit($url);
+        $this->browser = $this->newBrowser($driver);
+        if ($url !== 'about:blank') {
+            $this->browser->visit($url);
+        }
+    }
+
+    protected function newBrowser(ChromeDriver $driver): ChromeBrowser
+    {
+        return new ChromeBrowser($driver);
     }
 
     public function header()
@@ -102,6 +109,11 @@ class HttpDusk
             $this->createBrowser($this->url);
         }
         return $this->browser;
+    }
+
+    protected function visit($url)
+    {
+        $this->browser->visit($url);
     }
 
     public function browserCallback(): void
@@ -136,7 +148,7 @@ class HttpDusk
         return Http::response($this->body(), $this->status(), $this->header());
     }
 
-    public static function http_dusk(DuskFactory $duskRequest): Closure
+    public static function http_dusk(Factory $duskRequest): Closure
     {
         return function ($request, array $options = []) use ($duskRequest) {
             return static::make($request, $options, $duskRequest->browserCallbacks)->response();
