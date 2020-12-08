@@ -5,17 +5,30 @@ namespace KSuzuki2016\HttpClient\Http\Client;
 
 
 use Closure;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Collection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse as Response;
-use Exception;
 use KSuzuki2016\HttpClient\ResponseObserverHandler;
 
-class HttpClientPendingRequest extends PendingRequest
+abstract class HttpClientPendingRequest extends PendingRequest
 {
-    public function send(string $method, string $url, array $options = [])
+    /**
+     * @var HttpClientFactory|null
+     */
+    protected $factory;
+
+    abstract public function getClient(): ClientInterface;
+
+    public function buildClient(): ClientInterface
+    {
+        return $this->getClient();
+    }
+
+    public function send(string $method, string $url, array $options = []): HttpClientResponse
     {
         $url = ltrim(rtrim($this->baseUrl, '/') . '/' . ltrim($url, '/'), '/');
 
@@ -44,7 +57,7 @@ class HttpClientPendingRequest extends PendingRequest
                     'on_stats' => function ($transferStats) {
                         $this->transferStats = $transferStats;
                     },
-                ], $options))), function ($response) {
+                ], $options))), function (HttpClientResponse $response) {
                     $this->fireResponseObserver($response);
                     $response->cookies = $this->cookies;
                     $response->transferStats = $this->transferStats;
@@ -57,12 +70,15 @@ class HttpClientPendingRequest extends PendingRequest
             }
         }, $this->retryDelay ?? 100);
     }
+
     /**
      * Build the recorder handler.
      *
+     * new Responseがあったのでここに持ってきた
+     *
      * @return Closure
      */
-    public function buildRecorderHandler()
+    public function buildRecorderHandler(): Closure
     {
         return function ($handler) {
             return function ($request, $options) use ($handler) {
@@ -73,18 +89,25 @@ class HttpClientPendingRequest extends PendingRequest
                         (new Request($request))->withData($options['laravel_data']),
                         new Response($response)
                     );
-
                     return $response;
                 });
             };
         };
     }
 
-    public function fireResponseObserver($response)
+    public function fireResponseObserver($response): HttpClientResponse
     {
         if ($this->factory instanceof HttpClientFactory) {
             return ResponseObserverHandler::make($response, $this->factory->responseObserver)->fire();
         }
         return $response;
+    }
+
+    public function getBrowserCallbacks(): ?Collection
+    {
+        if ($this->factory instanceof HttpClientFactory) {
+            return $this->factory->browserCallbacks;
+        }
+        return null;
     }
 }

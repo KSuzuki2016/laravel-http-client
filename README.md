@@ -138,6 +138,34 @@ class TestMacro
 }
 ```
 
+## パッケージに含まれているマクロ
+
+### DocumentHTML( HTML [, Selector = 'html' ])
+
+`HTML`の内容で`Selector`内を書き換えます
+
+**Duskドライバーの場合**URLに`about:blank`を指定すると空のブラウザが立ち上がります
+
+``` php
+use KSuzuki2016\HttpClient\Macros\DocumentHTML;
+
+$macro = new DocumentHTML('<title>Title</title>','head') ;
+app('http-client')->driver('dusk')-->browserCallback($macro)->get('about:blank') ;
+```
+
+## スクリプトエラー
+
+マクロ実行中に発生したエラーログはレスポンスヘッダーの`errors`に格納されます
+
+``` php
+$response->header('errors');
+/*
+unknown error: Runtime.evaluate threw exception: SyntaxError: Unexpected identifier
+  (Session info: headless chrome=87.0.4280.66)
+  (Driver info: chromedriver=70.0.3538.97 (d035916fe243477005bc95fe2a5778b8f20b6ae1),platform=Linux 4.15.0-96-generic x86_64) screenshot path to screen
+*/
+```
+
 ## Response Observer
 
 レスポンスに対して処理を行う

@@ -4,15 +4,15 @@
 namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk;
 
 use GuzzleHttp\Exception\InvalidArgumentException;
-use Illuminate\Support\Collection;
-use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Collection;
+use KSuzuki2016\HttpClient\Http\Client\HttpClient;
 use KSuzuki2016\HttpClient\HttpDusk;
 use Psr\Http\Message\ResponseInterface;
 use function array_key_exists;
 use function is_array;
 
-class DuskClient extends Client
+class Client extends HttpClient
 {
     private $browserCallbacks;
 
@@ -74,7 +74,7 @@ class DuskClient extends Client
         return $result;
     }
 
-    protected function defaultUserAgent()
+    protected function defaultUserAgent(): string
     {
         return 'DuskHttp';
     }

@@ -2,7 +2,9 @@
 
 namespace Tests;
 
-use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\DuskFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Factory;
+use KSuzuki2016\HttpClient\Macros\DocumentHTML;
+use Tests\Macros\ExceptionTraceMacro;
 use Tests\Macros\ReplaceTextMacro;
 
 class HttpDuskClientTest extends TestCase
@@ -10,7 +12,7 @@ class HttpDuskClientTest extends TestCase
     /** @test */
     public function check_factory()
     {
-        self::assertInstanceOf(DuskFactory::class, $this->manager->driver('dusk'));
+        self::assertInstanceOf(Factory::class, $this->manager->driver('dusk'));
     }
 
     /** @test */
@@ -31,5 +33,21 @@ class HttpDuskClientTest extends TestCase
         self::assertSame([$title], $response->stack());
     }
 
+    /** @test */
+    public function open_blank_page_after_replace_html()
+    {
+        $html = file_get_contents($this->document_text);
+        $response = $this->manager->driver('dusk')->browserCallback(new DocumentHTML($html))->get('about:blank');
+        self::assertTrue($response->ok());
+        self::assertSame('Document Text Title', $response->crawler()->filterXPath('//*/title')->text());
+    }
+
+    /** @test */
+    public function check_script_macro_exception()
+    {
+        $response = $this->manager->driver('dusk')->browserCallback(new ExceptionTraceMacro)->get('about:blank');
+        self::assertTrue($response->failed());
+        self::assertStringStartsWith('unknown error', $response->header('errors'));
+    }
 
 }
