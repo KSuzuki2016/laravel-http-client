@@ -101,6 +101,18 @@ $manager->driver('dusk')->get('URL')->crawler() ;
 $manager->driver('dusk')->get('URL')->stacks() ;
 ```
 
+2021.3.27 `schema`を追加
+
+`<script type="application/ld+json">...</script>`のデータを取得して*Collection*として返す
+
+``` php
+<?php
+use KSuzuki2016\HttpClient\DriverManager ;
+
+$manager = app(KSuzuki2016\HttpClient\DriverManager::class) ;
+$manager->get('URL')->schema() ;
+```
+
 ## javascript browser macro
 
 javascriptの実行が可能
@@ -136,21 +148,6 @@ class TestMacro
         // Browser Macro
     }
 }
-```
-
-## パッケージに含まれているマクロ
-
-### DocumentHTML( HTML [, Selector = 'html' ])
-
-`HTML`の内容で`Selector`内を書き換えます
-
-**Duskドライバーの場合**URLに`about:blank`を指定すると空のブラウザが立ち上がります
-
-``` php
-use KSuzuki2016\HttpClient\Macros\DocumentHTML;
-
-$macro = new DocumentHTML('<title>Title</title>','head') ;
-app('http-client')->driver('dusk')-->browserCallback($macro)->get('about:blank') ;
 ```
 
 ## スクリプトエラー

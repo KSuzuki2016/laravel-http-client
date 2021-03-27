@@ -2,10 +2,14 @@
 
 namespace KSuzuki2016\HttpClient;
 
-use Illuminate\Support\Collection;
 use KSuzuki2016\HttpClient\Contracts\ResponseObserver;
+use KSuzuki2016\HttpClient\Http\Client\Collections\ResponseObserverCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse;
 
+/**
+ * Class ResponseObserverHandler
+ * @package KSuzuki2016\HttpClient
+ */
 class ResponseObserverHandler
 {
     /**
@@ -14,17 +18,17 @@ class ResponseObserverHandler
     protected $response;
 
     /**
-     * @var Collection
+     * @var ResponseObserverCollection
      */
     protected $observers;
 
-    public function __construct(HttpClientResponse $response, Collection $observers)
+    public function __construct(HttpClientResponse $response, ResponseObserverCollection $observers)
     {
         $this->response = $response;
         $this->observers = $observers;
     }
 
-    public function handle(ResponseObserver $responseObserver)
+    public function handle(ResponseObserver $responseObserver): bool
     {
         if ($this->response->successful()) {
             $this->setResponse($responseObserver->successful($this->response));
@@ -53,7 +57,7 @@ class ResponseObserverHandler
         return $this->response;
     }
 
-    public static function make(HttpClientResponse $response, Collection $observers): self
+    public static function make(HttpClientResponse $response, ResponseObserverCollection $observers): self
     {
         return new static($response, $observers);
     }

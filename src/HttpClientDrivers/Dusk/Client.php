@@ -5,19 +5,35 @@ namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk;
 
 use GuzzleHttp\Exception\InvalidArgumentException;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Collection;
+use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClient;
 use KSuzuki2016\HttpClient\HttpDusk;
 use Psr\Http\Message\ResponseInterface;
 use function array_key_exists;
 use function is_array;
 
+/**
+ * Class Client
+ * @package KSuzuki2016\HttpClient\HttpClientDrivers\Dusk
+ */
 class Client extends HttpClient
 {
+    /**
+     * @var
+     */
     private $browserCallbacks;
 
+    /**
+     * @var
+     */
     private $config;
 
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array $options
+     * @return ResponseInterface
+     */
     public function request(string $method, $uri = '', array $options = []): ResponseInterface
     {
         $options[RequestOptions::SYNCHRONOUS] = true;
@@ -27,12 +43,17 @@ class Client extends HttpClient
         return $this->requestAsync($method, $uri, $options)->wait();
     }
 
-    public function setBrowserCallbacks(Collection $browserCallbacks = null): self
+    public function setBrowserCallbacks(BrowserCallbackCollection $browserCallbacks = null): self
     {
-        $this->browserCallbacks = $browserCallbacks ?? new Collection;
+        $this->browserCallbacks = $browserCallbacks ?? app(BrowserCallbackCollection::class);
         return $this;
     }
 
+    /**
+     * @param $request
+     * @param array $options
+     * @return ResponseInterface
+     */
     public function requestDusk($request, array $options = []): ResponseInterface
     {
         return HttpDusk::make($request, $this->prepareDuskOptions($options), $this->browserCallbacks)->response()->wait();
@@ -61,6 +82,7 @@ class Client extends HttpClient
         }
 
         // Shallow merge defaults underneath options.
+        /** @noinspection AdditionOperationOnArraysInspection */
         $result = $options + $defaults;
 
         // Remove null values.

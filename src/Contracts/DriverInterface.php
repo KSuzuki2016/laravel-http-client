@@ -5,6 +5,10 @@ namespace KSuzuki2016\HttpClient\Contracts;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverCapabilities;
 
+/**
+ * Interface DriverInterface
+ * @package KSuzuki2016\HttpClient\Contracts
+ */
 interface DriverInterface
 {
 

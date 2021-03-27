@@ -5,32 +5,35 @@ namespace KSuzuki2016\HttpClient\Contracts;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use KSuzuki2016\HttpClient\Element;
 use Laravel\Dusk\Browser;
-
 use function substr;
 use const PHP_URL_PATH;
 
+/**
+ * Class DuskBrowser
+ * @package KSuzuki2016\HttpClient\Contracts
+ */
 abstract class DuskBrowser
 {
     /**
      * @var Browser $browser The browser instance to use.
      */
-    private $browser;
+    protected $browser;
 
     /**
-     * @var DriverInterface $driver The driver instance in use.
+     * @var null|DriverInterface $driver The driver instance in use.
      */
-    private $driver;
+    protected $driver;
 
     /**
      * @var string|null $baseUrl The base url.
      */
-    private $baseUrl;
+    protected $baseUrl;
 
 
     /**
      * Create a new instance.
      *
-     * @param DriverInterface $driver The browser driver to use
+     * @param null|DriverInterface $driver The browser driver to use
      */
     public function __construct(DriverInterface $driver = null)
     {
@@ -42,10 +45,7 @@ abstract class DuskBrowser
 
 
     /**
-     * Set the base url to use.
-     *
-     * @param string $url The base url
-     *
+     * @param string $url
      * @return $this
      */
     public function setBaseUrl(string $url): DuskBrowser
@@ -136,11 +136,11 @@ abstract class DuskBrowser
             return $url;
         }
 
-        if (substr($url, 0, 7) === "http://") {
+        if (strpos($url, "http://") === 0) {
             return $url;
         }
 
-        if (substr($url, 0, 8) === "https://") {
+        if (strpos($url, "https://") === 0) {
             return $url;
         }
 
@@ -185,7 +185,7 @@ abstract class DuskBrowser
      *
      * @param string $script The javascript to run
      *
-     * @return $this;
+     * @return $this
      */
     public function executeScript(string $script): DuskBrowser
     {

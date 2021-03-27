@@ -10,10 +10,14 @@ use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Request;
-use Illuminate\Support\Collection;
+use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse as Response;
 use KSuzuki2016\HttpClient\ResponseObserverHandler;
 
+/**
+ * Class HttpClientPendingRequest
+ * @package KSuzuki2016\HttpClient\Http\Client
+ */
 abstract class HttpClientPendingRequest extends PendingRequest
 {
     /**
@@ -52,12 +56,12 @@ abstract class HttpClientPendingRequest extends PendingRequest
             try {
                 $laravelData = $this->parseRequestData($method, $url, $options);
 
-                return tap(new Response($this->buildClient()->request($method, $url, $this->mergeOptions([
+                return tap(app(Response::class, ['response' => $this->buildClient()->request($method, $url, $this->mergeOptions([
                     'laravel_data' => $laravelData,
                     'on_stats' => function ($transferStats) {
                         $this->transferStats = $transferStats;
                     },
-                ], $options))), function (HttpClientResponse $response) {
+                ], $options))]), function (HttpClientResponse $response) {
                     $this->fireResponseObserver($response);
                     $response->cookies = $this->cookies;
                     $response->transferStats = $this->transferStats;
@@ -87,7 +91,7 @@ abstract class HttpClientPendingRequest extends PendingRequest
                 return $promise->then(function ($response) use ($request, $options) {
                     optional($this->factory)->recordRequestResponsePair(
                         (new Request($request))->withData($options['laravel_data']),
-                        new Response($response)
+                        app(Response::class, ['response' => $response])
                     );
                     return $response;
                 });
@@ -95,6 +99,10 @@ abstract class HttpClientPendingRequest extends PendingRequest
         };
     }
 
+    /**
+     * @param $response
+     * @return HttpClientResponse
+     */
     public function fireResponseObserver($response): HttpClientResponse
     {
         if ($this->factory instanceof HttpClientFactory) {
@@ -103,7 +111,7 @@ abstract class HttpClientPendingRequest extends PendingRequest
         return $response;
     }
 
-    public function getBrowserCallbacks(): ?Collection
+    public function getBrowserCallbacks(): ?BrowserCallbackCollection
     {
         if ($this->factory instanceof HttpClientFactory) {
             return $this->factory->browserCallbacks;

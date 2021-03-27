@@ -9,17 +9,27 @@ use KSuzuki2016\HttpClient\Commands\HttpObserverMakeCommand;
 
 /**
  * Class HttpClientServiceProvider
+ *
+ * クラスの説明文
+ *
+ * @package KSuzuki2016\HttpClient
  */
 class HttpClientServiceProvider extends ServiceProvider
 {
+    /**
+     * @var string[]
+     */
     public $bindings = [
         'http-client' => DriverManager::class
     ];
 
+    /**
+     * @var array
+     */
     public $singletons = [
     ];
 
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -34,7 +44,7 @@ class HttpClientServiceProvider extends ServiceProvider
 
     }
 
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/http-client.php', 'http-client');
         $this->app->singleton(DriverManager::class, function ($app) {
