@@ -10,7 +10,7 @@ use KSuzuki2016\HttpClient\Commands\HttpObserverMakeCommand;
 /**
  * Class HttpClientServiceProvider
  *
- * クラスの説明文
+ * Httpファサードを拡張したライブラリ
  *
  * @package KSuzuki2016\HttpClient
  */

@@ -19,12 +19,12 @@ use function is_array;
 class Client extends HttpClient
 {
     /**
-     * @var
+     * @var null|BrowserCallbackCollection
      */
     private $browserCallbacks;
 
     /**
-     * @var
+     * @var null|array
      */
     private $config;
 

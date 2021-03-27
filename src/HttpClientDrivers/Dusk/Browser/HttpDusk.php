@@ -46,12 +46,12 @@ class HttpDusk
     protected $options;
 
     /**
-     * @var
+     * @var null|DuskBrowser
      */
     protected $driver;
 
     /**
-     * @var
+     * @var null|ChromeBrowser
      */
     protected $browser;
 
