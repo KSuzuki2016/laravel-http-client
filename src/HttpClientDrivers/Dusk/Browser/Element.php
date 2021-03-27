@@ -1,6 +1,6 @@
 <?php
 
-namespace KSuzuki2016\HttpClient;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser;
 
 use Facebook\WebDriver\Interactions\Internal\WebDriverCoordinates;
 use Facebook\WebDriver\Remote\FileDetector;

@@ -1,13 +1,13 @@
 <?php
 
-namespace KSuzuki2016\HttpClient\Drivers;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome;
 
 use Laravel\Dusk\Chrome\ChromeProcess as BaseChromeProcess;
 use Symfony\Component\Process\Process;
 
 /**
  * Class ChromeProcess
- * @package KSuzuki2016\HttpClient\Drivers
+ * @package KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome
  */
 class ChromeProcess extends BaseChromeProcess
 {

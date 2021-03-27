@@ -4,14 +4,22 @@
 namespace Tests\Macros;
 
 
-use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome\ChromeBrowser;
 
+/**
+ * Class ReplaceTextMacro
+ * @package Tests\Macros
+ */
 class ReplaceTextMacro
 {
+    /**
+     * @var null
+     */
     protected $replace_text;
 
     /**
      * DuskMacro constructor.
+     * @param null $text
      */
     public function __construct($text = null)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace KSuzuki2016\HttpClient\Drivers;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome;
 
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -13,7 +13,7 @@ use Symfony\Component\Process\Process;
 
 /**
  * Class ChromeDriver
- * @package KSuzuki2016\HttpClient\Drivers
+ * @package KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome
  */
 class ChromeDriver implements DriverInterface
 {

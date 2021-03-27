@@ -1,7 +1,7 @@
 <?php
 
 
-namespace KSuzuki2016\HttpClient;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser;
 
 use ArrayAccess;
 use Closure;
@@ -11,11 +11,11 @@ use GuzzleHttp\Utils;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
-use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
-use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
-use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
 use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientFactory;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome\ChromeBrowser;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome\ChromeDriver;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Contracts\DuskBrowser;
 use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Factory;
 
 /**

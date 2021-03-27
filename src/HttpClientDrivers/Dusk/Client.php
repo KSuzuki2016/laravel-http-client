@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\InvalidArgumentException;
 use GuzzleHttp\RequestOptions;
 use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClient;
-use KSuzuki2016\HttpClient\HttpDusk;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\HttpDusk;
 use Psr\Http\Message\ResponseInterface;
 use function array_key_exists;
 use function is_array;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace KSuzuki2016\HttpClient\Macros;
+namespace Tests\Macros;
 
 
 use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;

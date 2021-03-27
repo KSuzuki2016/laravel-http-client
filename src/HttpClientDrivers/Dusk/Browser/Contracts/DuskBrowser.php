@@ -1,9 +1,10 @@
 <?php
 
-namespace KSuzuki2016\HttpClient\Contracts;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Contracts;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use KSuzuki2016\HttpClient\Element;
+use KSuzuki2016\HttpClient\Contracts\DriverInterface;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Element;
 use Laravel\Dusk\Browser;
 use function substr;
 use const PHP_URL_PATH;
