@@ -14,30 +14,36 @@ use Laravel\Dusk\Browser;
  */
 class ChromeBrowser extends DuskBrowser
 {
-    public function get($url)
+    /**
+     * @param $url
+     * @return null|string
+     */
+    public function get($url): ?string
     {
         $this->visit($url);
         return $this->getDriver()->getPageSource();
     }
 
-    public function getBody()
+    /**
+     * @return null|string
+     */
+    public function getBody(): ?string
     {
         return $this->getDriver()->getPageSource();
     }
 
-    public function screen()
+    /**
+     * @return null|string
+     */
+    public function screen(): ?string
     {
         $this->screenshot('');
         return $this->getDriver()->getPageSource();
     }
 
-    public function ensurejQueryIsAvailable()
+    public function ensurejQueryIsAvailable(): void
     {
         $this->getBrowser()->ensurejQueryIsAvailable();
     }
 
-    public function __destruct()
-    {
-        parent::__destruct();
-    }
 }

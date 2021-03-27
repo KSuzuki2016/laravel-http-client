@@ -5,29 +5,34 @@ namespace KSuzuki2016\HttpClient\Http\Client;
 
 
 use Illuminate\Http\Client\Factory;
-use Illuminate\Support\Collection;
 use KSuzuki2016\HttpClient\Contracts\ResponseObserver;
+use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
+use KSuzuki2016\HttpClient\Http\Client\Collections\ResponseObserverCollection;
 
+/**
+ * Class HttpClientFactory
+ * @package KSuzuki2016\HttpClient\Http\Client
+ */
 abstract class HttpClientFactory extends Factory
 {
 
     /**
      * The stub callables that will handle requests.
      *
-     * @var Collection
+     * @var BrowserCallbackCollection
      */
     public $browserCallbacks;
 
     /**
-     * @var Collection
+     * @var ResponseObserverCollection
      */
     public $responseObserver;
 
     public function __construct()
     {
         parent::__construct();
-        $this->browserCallbacks = new Collection;
-        $this->responseObserver = new Collection;
+        $this->browserCallbacks = app(BrowserCallbackCollection::class);
+        $this->responseObserver = app(ResponseObserverCollection::class);
     }
 
     abstract protected function callPendingRequest(): HttpClientPendingRequest;

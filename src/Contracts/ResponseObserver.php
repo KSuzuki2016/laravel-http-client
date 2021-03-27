@@ -4,8 +4,15 @@ namespace KSuzuki2016\HttpClient\Contracts;
 
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse;
 
+/**
+ * Class ResponseObserver
+ * @package KSuzuki2016\HttpClient\Contracts
+ */
 abstract class ResponseObserver implements ResponseObserverInterface
 {
+    /**
+     * @var bool
+     */
     protected $observation = true;
 
     protected function breakObservation(): void

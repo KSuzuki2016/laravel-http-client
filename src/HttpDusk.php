@@ -10,38 +10,79 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use GuzzleHttp\Utils;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
 use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
 use KSuzuki2016\HttpClient\Drivers\ChromeDriver;
+use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
+use KSuzuki2016\HttpClient\Http\Client\HttpClientFactory;
 use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Factory;
 
+/**
+ * Class HttpDusk
+ * @package KSuzuki2016\HttpClient
+ */
 class HttpDusk
 {
 
+    /**
+     * @var null
+     */
     protected $request;
 
+    /**
+     * @var array|ArrayAccess|mixed
+     */
     protected $headers;
 
+    /**
+     * @var array|ArrayAccess|mixed|string
+     */
     protected $url;
 
+    /**
+     * @var array
+     */
     protected $options;
 
+    /**
+     * @var
+     */
     protected $driver;
 
+    /**
+     * @var
+     */
     protected $browser;
 
+    /**
+     * @var \Illuminate\Contracts\Foundation\Application|BrowserCallbackCollection|mixed
+     */
     protected $browserCallbacks;
 
+    /**
+     * @var array
+     */
     protected $stacks = [];
 
+    /**
+     * @var array
+     */
     protected $errors = [];
 
+    /**
+     * @var int
+     */
     protected $status = 200;
 
 
-    public function __construct($request = null, array $options = [], Collection $browserCallbacks = null)
+    /**
+     * HttpDusk constructor.
+     * @param null $request
+     * @param array $options
+     * @param null|BrowserCallbackCollection $browserCallbacks
+     */
+    public function __construct($request = null, array $options = [], BrowserCallbackCollection $browserCallbacks = null)
     {
         $this->request = $request;
         if ($request instanceof Request) {
@@ -52,14 +93,23 @@ class HttpDusk
             $this->url = Arr::get($request, 'url');
         }
         $this->options = $options;
-        $this->browserCallbacks = $browserCallbacks ?? collect();
+        $this->browserCallbacks = $browserCallbacks ?? app(BrowserCallbackCollection::class);
     }
 
-    public static function make($request, array $options = [], Collection $browserCallbacks = null): self
+    /**
+     * @param $request
+     * @param array $options
+     * @param null|BrowserCallbackCollection $browserCallbacks
+     * @return static
+     */
+    public static function make($request, array $options = [], BrowserCallbackCollection $browserCallbacks = null): self
     {
         return new static($request, $options, $browserCallbacks);
     }
 
+    /**
+     * @param $url
+     */
     public function createBrowser($url): void
     {
         $chromeOptions = new ChromeOptions;
@@ -80,7 +130,10 @@ class HttpDusk
         return new ChromeBrowser($driver);
     }
 
-    public function header()
+    /**
+     * @return array
+     */
+    public function header(): array
     {
         return array_filter([
             'stacks' => $this->stacks,
@@ -93,16 +146,25 @@ class HttpDusk
         return Arr::get($this->options, 'userAgent', Arr::get((array)$this->headers, 'User-Agent')) ?? Utils::defaultUserAgent();
     }
 
+    /**
+     * @return mixed
+     */
     public function body()
     {
         return $this->browser()->getBody();
     }
 
-    public function status()
+    /**
+     * @return int
+     */
+    public function status(): int
     {
         return $this->status;
     }
 
+    /**
+     * @return DuskBrowser
+     */
     public function browser(): DuskBrowser
     {
         if (!($this->browser instanceof DuskBrowser)) {
@@ -111,7 +173,10 @@ class HttpDusk
         return $this->browser;
     }
 
-    protected function visit($url)
+    /**
+     * @param $url
+     */
+    protected function visit($url): void
     {
         $this->browser->visit($url);
     }
@@ -122,9 +187,9 @@ class HttpDusk
             try {
                 $stack = $callback($this->browser());
                 if ($stack instanceof ArrayAccess || is_array($stack)) {
-                    $stack = json_encode($stack);
+                    $stack = json_encode($stack, JSON_THROW_ON_ERROR);
                 } else if (!self::isJson($stack)) {
-                    $stack = json_encode((array)$stack);
+                    $stack = json_encode((array)$stack, JSON_THROW_ON_ERROR);
                 }
                 $this->stacks[] = $stack;
             } catch (Exception $e) {
@@ -133,16 +198,23 @@ class HttpDusk
         });
     }
 
-    public static function isJson($value)
+    /**
+     * @param $value
+     * @return bool
+     */
+    public static function isJson($value): bool
     {
         if (!in_array(substr($value, 0, 1), ['{', '[']) || !in_array(substr($value, -1), ['}', ']'])) {
             return false;
         }
-        json_decode($value);
+        json_decode($value, true);
         return (json_last_error() === JSON_ERROR_NONE);
     }
 
-    public function response()
+    /**
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function response(): \GuzzleHttp\Promise\PromiseInterface
     {
         $this->browserCallback();
         return Http::response($this->body(), $this->status(), $this->header());
@@ -150,12 +222,13 @@ class HttpDusk
 
     public static function http_dusk(Factory $duskRequest): Closure
     {
-        return function ($request, array $options = []) use ($duskRequest) {
+        return static function ($request, array $options = []) use ($duskRequest) {
+            /** @var Factory|HttpClientFactory $duskRequest */
             return static::make($request, $options, $duskRequest->browserCallbacks)->response();
         };
     }
 
-    public function failed(Exception $exception)
+    public function failed(Exception $exception): void
     {
         $screenshot = storage_path('logs/screen/' . time());
         $this->errors[] = $exception->getMessage() . ' screenshot ' . $screenshot;
@@ -163,6 +236,10 @@ class HttpDusk
         $this->status = 500;
     }
 
+    /**
+     * @param Request $request
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
     public function __invoke(Request $request)
     {
         return $this->response();

@@ -4,6 +4,10 @@ namespace KSuzuki2016\HttpClient\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 
+/**
+ * Class HttpMacroMakeCommand
+ * @package KSuzuki2016\HttpClient\Commands
+ */
 class HttpMacroMakeCommand extends GeneratorCommand
 {
     /**
@@ -32,7 +36,7 @@ class HttpMacroMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         return $this->resolveStubPath('/stubs/http-macro.stub');
     }
@@ -43,7 +47,7 @@ class HttpMacroMakeCommand extends GeneratorCommand
      * @param string $stub
      * @return string
      */
-    protected function resolveStubPath($stub)
+    protected function resolveStubPath($stub): string
     {
         return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
@@ -56,7 +60,7 @@ class HttpMacroMakeCommand extends GeneratorCommand
      * @param string $rootNamespace
      * @return string
      */
-    protected function getDefaultNamespace($rootNamespace)
+    protected function getDefaultNamespace($rootNamespace): string
     {
         return $rootNamespace . '\HttpMacros';
     }

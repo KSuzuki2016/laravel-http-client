@@ -12,8 +12,14 @@ use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
  */
 class DocumentHTML
 {
+    /**
+     * @var string
+     */
     protected $html;
 
+    /**
+     * @var string
+     */
     protected $selector;
 
     /**
@@ -39,7 +45,7 @@ class DocumentHTML
 
     public static function script(string $selector, string $html): string
     {
-        $json = json_encode($html);
+        $json = json_encode($html, JSON_THROW_ON_ERROR);
         return <<<SCRIPT
 (function($){
 $('{$selector}').empty().html({$json}) ;

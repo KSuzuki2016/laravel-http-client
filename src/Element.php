@@ -17,7 +17,7 @@ use Laravel\Dusk\ElementResolver;
  * @method self clear()
  * @method self findElement(WebDriverBy $by)
  * @method self[] findElements(WebDriverBy $by)
- * @method ?string getAttribute(string $attribute_name)
+ * @method null|string getAttribute(string $attribute_name)
  * @method string getCSSValue(string $css_property_name)
  * @method WebDriverPoint getLocation()
  * @method WebDriverPoint getLocationOnScreenOnceScrolledIntoView()
@@ -167,7 +167,7 @@ class Element
     /**
      * Click the element at the given selector (or this element).
      *
-     * @param string $selector
+     * @param null|string $selector
      *
      * @return $this
      */
@@ -189,7 +189,7 @@ class Element
     /**
      * Move the mouse over the given selector (or this element).
      *
-     * @param string $selector
+     * @param null|string $selector
      *
      * @return $this
      */

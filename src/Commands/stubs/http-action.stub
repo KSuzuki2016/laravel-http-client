@@ -1,8 +1,8 @@
 <?php
 namespace KSuzuki2016\HttpClient\HttpActions;
 
-use KSuzuki2016\HttpClient\Extentions\Contracts\HttpClient;
-use KSuzuki2016\HttpClient\Extentions\Macros\BrowserMacro;
+use KSuzuki2016\HttpClient\Extensions\Contracts\HttpClient;
+use KSuzuki2016\HttpClient\Extensions\Macros\BrowserMacro;
 use Illuminate\Http\Client\Response;
 use Exception;
 use KSuzuki2016\HttpClient\Http\DuskFactory;

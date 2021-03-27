@@ -4,43 +4,62 @@
 namespace KSuzuki2016\HttpClient\Http\Client;
 
 use Illuminate\Http\Client\Response;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseCrawler;
+use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseSchema;
+use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseStacks;
 
+/**
+ * Class HttpClientResponse
+ *
+ * @method bool successful()
+ * @method bool failed()
+ * @method bool serverError()
+ * @method bool clientError()
+ * @method int status()
+ * @method bool ok()
+ * @method string header($header)
+ * @method array headers()
+ * @method string body() レスポンスbodyを取得します
+ * @method mixed json() レスポンスのJSONを配列かスカラー値として取得します
+ * @method object object() レスポンスのJSONをオブジェクトとして取得します
+ * @method Collection collect($key = null) レスポンスのJSONをコレクションとして取得します
+ * @method $this throw() サーバーまたはクライアントのエラーが発生した場合は、例外をスローします
+ *
+ * @package KSuzuki2016\HttpClient\Http\Client
+ */
 class HttpClientResponse extends Response
 {
+    use ResponseCrawler;
+    use ResponseSchema;
+    use ResponseStacks;
+
+    /**
+     * Get the response cookies.
+     *
+     * @var \GuzzleHttp\Cookie\CookieJar
+     */
     public $cookies;
 
+    /**
+     * The decoded JSON response.
+     *
+     * @var array
+     */
     protected $decoded;
 
-    protected $stacks;
-
+    /**
+     * The transfer stats for the request.
+     *
+     * @var \GuzzleHttp\TransferStats
+     */
     public $transferStats;
 
-    public function crawler()
-    {
-        return app(config('http-client.crawler'), ['node' => $this->body()]);
-    }
-
-    /** @noinspection ClassMethodNameMatchesFieldNameInspection */
-    public function stacks()
-    {
-        if (!$this->stacks) {
-            $this->stacks = json_decode('[' . $this->header('stacks') . ']', true);
-        }
-        return $this->stacks;
-    }
-
-    public function stack(int $key = 0)
-    {
-        return Arr::get($this->stacks(), $key);
-    }
-
-    public function setStacks(array $stacks): self
-    {
-        $this->stacks = $stacks;
-        return $this;
-    }
-
+    /**
+     * @param $key
+     * @param null $value
+     * @return $this
+     */
     public function setJson($key, $value = null): self
     {
         if (is_array($key)) {

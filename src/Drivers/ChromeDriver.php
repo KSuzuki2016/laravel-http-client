@@ -11,6 +11,10 @@ use KSuzuki2016\HttpClient\Contracts\DriverInterface;
 use Laravel\Dusk\OperatingSystem;
 use Symfony\Component\Process\Process;
 
+/**
+ * Class ChromeDriver
+ * @package KSuzuki2016\HttpClient\Drivers
+ */
 class ChromeDriver implements DriverInterface
 {
     /** @var string */
@@ -25,6 +29,11 @@ class ChromeDriver implements DriverInterface
     /** @var WebDriverCapabilities */
     private $capabilities;
 
+    /**
+     * ChromeDriver constructor.
+     * @param ChromeOptions $options
+     * @param null $binPath
+     */
     public function __construct(ChromeOptions $options, $binPath = null)
     {
         $this->setBinary($binPath);
@@ -34,7 +43,10 @@ class ChromeDriver implements DriverInterface
         $this->setCapabilities($capabilities);
     }
 
-    protected function setBinary($path = null)
+    /**
+     * @param null $path
+     */
+    protected function setBinary($path = null): void
     {
         if ($path) {
             $path = Str::finish($path, '/');
@@ -48,12 +60,18 @@ class ChromeDriver implements DriverInterface
         }
     }
 
-    protected function onWindows()
+    /**
+     * @return bool
+     */
+    protected function onWindows(): bool
     {
         return OperatingSystem::onWindows();
     }
 
-    protected function onMac()
+    /**
+     * @return bool
+     */
+    protected function onMac(): bool
     {
         return OperatingSystem::onMac();
     }
