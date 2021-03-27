@@ -7,18 +7,37 @@ use KSuzuki2016\HttpClient\HttpClientServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tests\Server\CreateLocalServer;
 
+/**
+ * Class TestCase
+ * @package Tests
+ */
 class TestCase extends Orchestra
 {
     use CreateLocalServer;
 
+    /**
+     * @var string
+     */
     public $host = 'localhost:8000';
 
+    /**
+     * @var string
+     */
     public $document_text;
 
+    /**
+     * @var string
+     */
     public $html_page;
 
+    /**
+     * @var string
+     */
     public $json;
 
+    /**
+     * @var DriverManager|mixed
+     */
     public $manager;
 
     public function setUp(): void
@@ -32,6 +51,10 @@ class TestCase extends Orchestra
         $this->manager = $this->app->make(DriverManager::class);
     }
 
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     * @return string[]
+     */
     protected function getPackageProviders($app): array
     {
         return [
@@ -39,6 +62,9 @@ class TestCase extends Orchestra
         ];
     }
 
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     */
     public function getEnvironmentSetUp($app): void
     {
         $app['config']->set('database.default', 'sqlite');

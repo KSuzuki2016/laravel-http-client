@@ -1,16 +1,16 @@
 <?php
 
 
-namespace KSuzuki2016\HttpClient\Drivers;
+namespace KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome;
 
-use KSuzuki2016\HttpClient\Contracts\DuskBrowser;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Contracts\DuskBrowser;
 use Laravel\Dusk\Browser;
 
 /**
  * Class ChromeBrowser
  *
  * @mixin Browser
- * @package HttpClient\WebDriver
+ * @package KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome
  */
 class ChromeBrowser extends DuskBrowser
 {

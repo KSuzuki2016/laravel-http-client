@@ -2,8 +2,12 @@
 
 namespace Tests\Macros;
 
-use KSuzuki2016\HttpClient\Drivers\ChromeBrowser;
+use KSuzuki2016\HttpClient\HttpClientDrivers\Dusk\Browser\Chrome\ChromeBrowser;
 
+/**
+ * Class ExceptionTraceMacro
+ * @package Tests\Macros
+ */
 class ExceptionTraceMacro
 {
 

@@ -5,11 +5,18 @@ namespace Tests;
 
 use Tests\Observers\ReplaceResponseObserver;
 
+/**
+ * Class ResponseObserverTest
+ * @package Tests
+ */
 class ResponseObserverTest extends TestCase
 {
 
-    /** @test */
-    public function check_observer()
+    /**
+     * @test
+     * @return void
+     */
+    public function check_observer(): void
     {
         $text = 'Replace Json';
         $response = $this->manager
