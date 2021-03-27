@@ -14,7 +14,7 @@ use KSuzuki2016\HttpClient\DriverManager;
 abstract class HttpClient implements HttpClientInterface
 {
     /**
-     * @var
+     * @var null|string
      */
     protected $driver;
 
