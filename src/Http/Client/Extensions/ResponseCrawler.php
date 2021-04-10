@@ -2,12 +2,12 @@
 
 namespace KSuzuki2016\HttpClient\Http\Client\Extensions;
 
-use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse;
+use Illuminate\Http\Client\Response;
 
 /**
  * Trait ResponseCrawler
  *
- * @mixin HttpClientResponse
+ * @mixin Response
  * @package KSuzuki2016\HttpClient\Http\Client\Extensions
  */
 trait ResponseCrawler
@@ -17,7 +17,7 @@ trait ResponseCrawler
      */
     public function crawler()
     {
-        return app(config('http-client.crawler'), ['node' => $this->body()]);
+        return app(config('http-client.crawler'), ['node' => $this->body(), 'uri' => (string)$this->effectiveUri()]);
     }
 
 }

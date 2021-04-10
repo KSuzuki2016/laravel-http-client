@@ -62,12 +62,12 @@ abstract class HttpClientPendingRequest extends PendingRequest
                         $this->transferStats = $transferStats;
                     },
                 ], $options))]), function (HttpClientResponse $response) {
-                    $this->fireResponseObserver($response);
                     $response->cookies = $this->cookies;
                     $response->transferStats = $this->transferStats;
                     if ($this->tries > 1 && !$response->successful()) {
                         $response->throw();
                     }
+                    $this->fireResponseObserver($response);
                 });
             } catch (ConnectException $e) {
                 throw new ConnectionException($e->getMessage(), 0, $e);

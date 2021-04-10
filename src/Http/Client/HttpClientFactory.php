@@ -5,7 +5,7 @@ namespace KSuzuki2016\HttpClient\Http\Client;
 
 
 use Illuminate\Http\Client\Factory;
-use KSuzuki2016\HttpClient\Contracts\ResponseObserver;
+use KSuzuki2016\HttpClient\Contracts\ResponseObserverInterface;
 use KSuzuki2016\HttpClient\Http\Client\Collections\BrowserCallbackCollection;
 use KSuzuki2016\HttpClient\Http\Client\Collections\ResponseObserverCollection;
 
@@ -48,7 +48,7 @@ abstract class HttpClientFactory extends Factory
         return $this;
     }
 
-    public function responseObserver(ResponseObserver $observer): self
+    public function responseObserver(ResponseObserverInterface $observer): self
     {
         $this->responseObserver->push($observer);
         return $this;
