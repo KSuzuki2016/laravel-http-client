@@ -36,8 +36,6 @@ php artisan dusk:chrome-driver 70
 
 return [
 
-    'crawler'   => env('HTTP_RESPONSE_CRAWLER', \Symfony\Component\DomCrawler\Crawler::class ) ,
-
     'binPath' => env('HTTP_CLIENT_CHROME_PATH') ,
 
     /*

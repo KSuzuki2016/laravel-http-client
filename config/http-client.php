@@ -1,10 +1,6 @@
 <?php
 
-use Symfony\Component\DomCrawler\Crawler;
-
 return [
-
-    'crawler' => env('HTTP_RESPONSE_CRAWLER', Crawler::class),
 
     'binPath' => env('HTTP_CLIENT_CHROME_PATH'),
     /*

@@ -2,7 +2,9 @@
 
 namespace KSuzuki2016\HttpClient\Http\Client\Extensions;
 
+use Exception;
 use Illuminate\Http\Client\Response;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Trait ResponseCrawler
@@ -13,11 +15,15 @@ use Illuminate\Http\Client\Response;
 trait ResponseCrawler
 {
     /**
-     * @return \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
+     * @return Crawler
      */
-    public function crawler()
+    public function crawler(): Crawler
     {
-        return app(config('http-client.crawler'), ['node' => $this->body(), 'uri' => (string)$this->effectiveUri()]);
+        try {
+            return app(Crawler::class, ['node' => $this->body(), 'uri' => (string)$this->effectiveUri()]);
+        } catch (Exception $e) {
+            return app(Crawler::class, ['node' => $e->getMessage(), 'uri' => '/']);
+        }
     }
 
 }
