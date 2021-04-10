@@ -5,6 +5,7 @@ namespace KSuzuki2016\HttpClient\Http\Client;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
+use KSuzuki2016\HttpClient\Contracts\ResponseCrawlerInterface;
 use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseCrawler;
 use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseSchema;
 use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseStacks;
@@ -21,7 +22,7 @@ use KSuzuki2016\HttpClient\Http\Client\Extensions\ResponseStacks;
  * @method string header($header)
  * @method array headers()
  * @method string body() レスポンスbodyを取得します
- * @method mixed json() レスポンスのJSONを配列かスカラー値として取得します
+ * @method mixed json($key = null, $default = null) レスポンスのJSONを配列かスカラー値として取得します
  * @method object object() レスポンスのJSONをオブジェクトとして取得します
  * @method Collection collect($key = null) レスポンスのJSONをコレクションとして取得します
  * @method $this throw() サーバーまたはクライアントのエラーが発生した場合は、例外をスローします

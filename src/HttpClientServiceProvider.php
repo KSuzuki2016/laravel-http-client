@@ -20,7 +20,8 @@ class HttpClientServiceProvider extends ServiceProvider
      * @var string[]
      */
     public $bindings = [
-        'http-client' => DriverManager::class
+        DriverManager::class,
+        'http-client' => DriverManager::class,
     ];
 
     /**
@@ -47,9 +48,6 @@ class HttpClientServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/http-client.php', 'http-client');
-        $this->app->singleton(DriverManager::class, function ($app) {
-            return new DriverManager($app);
-        });
         $this->app->bind('chrome-bin-path', function ($app) {
             return $app['config']->get('http-client.binPath');
         });

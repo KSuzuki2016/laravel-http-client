@@ -260,4 +260,47 @@ Response Observerのひな形を作成
 $ php artisan make:http:Observer CustomObserver
 ```
 
+## Http Client Request
+
+パラメーターを設定した`PendingRequest`を呼び出す為のクラス
+
+### user agentを設定したクライアントの例
+
+``` php
+<?php
+namespace App\HttpClients ;
+
+use KSuzuki2016\HttpClient\Contracts\HttpClientRequest;
+
+class MobileClient extends HttpClientRequest
+{
+    /**
+     * observer brawserCallback の設定等を行う場合
+     * プロパティでも設定可能
+     * @property HttpClientFactory app
+     * 
+     * サービスプロバイダの bindings の様な設定も可能
+     * @property array observers
+     * @property array macros
+    */
+
+    protected $headers = [
+        'user-agent' => 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.91 Mobile Safari/537.36'
+    ] ;
+}
+```
+
+### 利用方法
+
+``` php
+$client = new MobileClient ;
+$client->get('http://...') ;
+
+// ResponseObserver BrowserMacro の利用
+$client->observe( ResponseObserver )->macro( BrowserMacro )->get('http://...') ;
+
+// デバッグを行う場合
+$client->debug()->get('http://...') ;
+```
+
 [Laravel HTTPクライアント]:https://readouble.com/laravel/8.x/ja/http-client.html

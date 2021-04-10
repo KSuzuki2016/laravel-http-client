@@ -2,7 +2,7 @@
 
 namespace KSuzuki2016\HttpClient;
 
-use KSuzuki2016\HttpClient\Contracts\ResponseObserver;
+use KSuzuki2016\HttpClient\Contracts\ResponseObserverInterface;
 use KSuzuki2016\HttpClient\Http\Client\Collections\ResponseObserverCollection;
 use KSuzuki2016\HttpClient\Http\Client\HttpClientResponse;
 
@@ -28,7 +28,7 @@ class ResponseObserverHandler
         $this->observers = $observers;
     }
 
-    public function handle(ResponseObserver $responseObserver): bool
+    public function handle(ResponseObserverInterface $responseObserver): bool
     {
         if ($this->response->successful()) {
             $this->setResponse($responseObserver->successful($this->response));
@@ -51,7 +51,7 @@ class ResponseObserverHandler
 
     public function fire(): HttpClientResponse
     {
-        $this->observers->each(function (ResponseObserver $observer) {
+        $this->observers->each(function (ResponseObserverInterface $observer) {
             return $this->handle($observer);
         });
         return $this->response;
